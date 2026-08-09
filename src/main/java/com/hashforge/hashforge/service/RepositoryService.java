@@ -30,6 +30,9 @@ public class RepositoryService {
         if(!Files.exists(repositorypath)){
             try {
                 Files.createDirectory(repositorypath);
+                Path objectsPath = repositorypath.resolve("objects");
+                Files.createDirectory(objectsPath);
+
             } catch (IOException e) {
                 System.out.println("Failed to create .hashforge directory: " + e.getMessage());
                 return RepositoryStatus.FAILED;
