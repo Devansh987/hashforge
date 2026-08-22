@@ -28,4 +28,20 @@ public class IndexService {
         );
 
     }
+
+    public Index loadIndex(String repositoryPath) throws IOException {
+        Path indexpath = Path.of(repositoryPath).resolve(".hashforge").resolve("index");
+
+        String content = Files.readString(indexpath);
+
+        Index index = new Index();
+        String[] line = content.split("\n");
+        for(String s : line){
+            String[] par = s.split(" ");
+            IndexEntry entry = new IndexEntry(par[0],par[1]);
+            index.addEntry(entry);
+        }
+
+        return index;
+    }
 }
