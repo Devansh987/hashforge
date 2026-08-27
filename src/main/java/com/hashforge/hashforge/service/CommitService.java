@@ -55,6 +55,24 @@ public class CommitService {
         Files.write(objectPath, bytes);
         return hash;
     }
+
+
+    public Commit loadCommit(String commitHash,String repositoryPath) throws IOException {
+        Path objectPath = Path.of(repositoryPath)
+                .resolve(".hashforge")
+                .resolve("objects")
+                .resolve(commitHash);
+        String content = Files.readString(objectPath);
+        String[] lines = content.split("\n");
+        String treeHash = lines[0].substring(5).trim();
+
+        String parentHash = lines[1].substring(7).trim();
+        if (parentHash.isEmpty()) {
+            parentHash = null;
+        }
+        String message = lines[2].substring(8).trim();
+        return new Commit(commitHash,parentHash,message);
+    }
 }
 
 

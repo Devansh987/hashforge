@@ -163,4 +163,62 @@ class CommitManagerServiceTest {
                         repositoryPath.toString()
                 );
     }
+
+    @Test
+    void shouldTraverseCommitHistory()
+            throws IOException, NoSuchAlgorithmException {
+
+        when(headService.getHead(repositoryPath.toString()))
+                .thenReturn("COMMIT003");
+
+        Commit commit3 = new Commit(
+                "TREE003",
+                "COMMIT002",
+                "Third commit"
+        );
+
+        Commit commit2 = new Commit(
+                "TREE002",
+                "COMMIT001",
+                "Second commit"
+        );
+
+        Commit commit1 = new Commit(
+                "TREE001",
+                null,
+                "Initial commit"
+        );
+
+        when(commitService.loadCommit(
+                "COMMIT003",
+                repositoryPath.toString()
+        )).thenReturn(commit3);
+
+        when(commitService.loadCommit(
+                "COMMIT002",
+                repositoryPath.toString()
+        )).thenReturn(commit2);
+
+        when(commitService.loadCommit(
+                "COMMIT001",
+                repositoryPath.toString()
+        )).thenReturn(commit1);
+
+        commitManagerService.log(repositoryPath.toString());
+
+        verify(commitService).loadCommit(
+                "COMMIT003",
+                repositoryPath.toString()
+        );
+
+        verify(commitService).loadCommit(
+                "COMMIT002",
+                repositoryPath.toString()
+        );
+
+        verify(commitService).loadCommit(
+                "COMMIT001",
+                repositoryPath.toString()
+        );
+    }
 }
