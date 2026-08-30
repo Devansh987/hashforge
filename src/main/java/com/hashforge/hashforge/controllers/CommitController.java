@@ -1,5 +1,6 @@
 package com.hashforge.hashforge.controllers;
 
+import com.hashforge.hashforge.Dto.CommitRequest;
 import com.hashforge.hashforge.Dto.LogRequest;
 import com.hashforge.hashforge.model.CommitLog;
 import com.hashforge.hashforge.service.CommitManagerService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -25,10 +27,15 @@ public class CommitController {
     @PostMapping("/log")
     public ResponseEntity<?> logs(@RequestBody LogRequest request) throws IOException {
         String repositoryPath = request.getRepositoryPath();
-        System.out.println("Repository Path = " + repositoryPath);
         List<CommitLog> logs = commitManagerService.log(repositoryPath);
         return ResponseEntity.ok(logs);
 
+    }
+
+    @PostMapping
+    public ResponseEntity<?> commit(@RequestBody CommitRequest commitRequest) throws IOException, NoSuchAlgorithmException {
+       String hash = commitManagerService.createCommit(commitRequest.getMessage(), commitRequest.getRepositoryPath());
+        return ResponseEntity.status(HttpStatus.CREATED).body(hash);
     }
 
 
